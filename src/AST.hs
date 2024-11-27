@@ -13,6 +13,8 @@ data Exp a where
   Minus ::Exp Int -> Exp Int -> Exp Int
   Times ::Exp Int -> Exp Int -> Exp Int
   Div ::Exp Int -> Exp Int -> Exp Int
+  VarDec ::Variable -> Exp Int
+  VarInc ::Variable -> Exp Int
   -- Bool
   BTrue ::Exp Bool
   BFalse ::Exp Bool
@@ -23,8 +25,6 @@ data Exp a where
   Not ::Exp Bool -> Exp Bool
   Eq ::Exp Int -> Exp Int -> Exp Bool
   NEq ::Exp Int -> Exp Int -> Exp Bool
-  EAssgn ::Variable -> Exp Int -> Exp Int
-  ESeq ::Exp Int -> Exp Int -> Exp Int
 
 deriving instance Show (Exp a)
 deriving instance Eq (Exp a)
