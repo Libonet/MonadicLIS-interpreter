@@ -27,8 +27,8 @@ pExp (Gt  a b     ) = pExp a <+> text ">" <+> pExp b
 pExp (And a b     ) = pExp a <+> text "&&" <+> pExp b
 pExp (Or  a b     ) = pExp a <+> text "||" <+> pExp b
 pExp (Not b       ) = text "!" <+> pExp b
-pExp (VarDec x    ) = pExp x <+> text "--"
-pExp (VarInc x    ) = pExp x <+> text "++"
+pExp (VarDec x    ) = pVar x <+> text "--"
+pExp (VarInc x    ) = pVar x <+> text "++"
 
 pComm :: Comm -> Doc
 pComm Skip        = text "skip"
