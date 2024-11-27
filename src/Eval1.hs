@@ -112,34 +112,6 @@ evalExp (NEq e1 e2) = do x <- evalExp e1
 evalExp (EAssgn v e) = do x <- evalExp e
                           update v x
                           return x
-evalExp (ESeq e1 e2) = do x <- evalExp e1
+evalExp (ESeq e1 e2) = do evalExp e1
                           y <- evalExp e2
-                          return y -- TODO: Check if ESeq should return y instead of something else.
-
-
-
-
-
-{-
-data Exp a where
-  -- Int
-  Const ::Int -> Exp Int
-  Var ::Variable -> Exp Int
-  UMinus ::Exp Int -> Exp Int
-  Plus ::Exp Int -> Exp Int -> Exp Int
-  Minus ::Exp Int -> Exp Int -> Exp Int
-  Times ::Exp Int -> Exp Int -> Exp Int
-  Div ::Exp Int -> Exp Int -> Exp Int
-  -- Bool
-  BTrue ::Exp Bool
-  BFalse ::Exp Bool
-  Lt ::Exp Int -> Exp Int -> Exp Bool
-  Gt ::Exp Int -> Exp Int -> Exp Bool
-  And ::Exp Bool -> Exp Bool -> Exp Bool
-  Or ::Exp Bool -> Exp Bool -> Exp Bool
-  Not ::Exp Bool -> Exp Bool
-  Eq ::Exp Int -> Exp Int -> Exp Bool
-  NEq ::Exp Int -> Exp Int -> Exp Bool
-  EAssgn ::Variable -> Exp Int -> Exp Int
-  ESeq ::Exp Int -> Exp Int -> Exp Int
--}
+                          return y
