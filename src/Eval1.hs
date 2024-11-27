@@ -108,8 +108,12 @@ evalExp (Eq e1 e2) = do x <- evalExp e1
 evalExp (NEq e1 e2) = do x <- evalExp e1
                          y <- evalExp e2
                          return (x /= y)
-evalExp (EAssgn v e) = 
-evalExp (ESeq e1 e2) = 
+evalExp (EAssgn v e) = do x <- evalExp e
+                          update v x
+                          return x
+evalExp (ESeq e1 e2) = do x <- evalExp e1
+                          y <- evalExp e2
+                          return y -- TODO: Check if ESeq should return y instead of something else.
 
 
 
