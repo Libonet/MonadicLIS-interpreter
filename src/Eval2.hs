@@ -8,9 +8,6 @@ import           AST
 import           Monads
 import qualified Data.Map.Strict               as M
 import           Data.Maybe
-import           Prelude                 hiding ( fst
-                                                , snd
-                                                )
 import           Data.Strict.Tuple
 import           Control.Monad                  ( liftM
                                                 , ap
