@@ -49,6 +49,6 @@ $=~<\text{Lema 2: (\textbackslash}x \rightarrow f x) = f>$
 
 $State~(runState~(f~x))$
 
-$=~<\text{Lema 1: } (runState.State) = (State.runState) = id\text{, id.1, Def. (.)}>$
+$=~<\text{Lema 1, id.1, Def. (.)}>$
 
 $f x$
