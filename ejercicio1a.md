@@ -52,3 +52,63 @@ $State~(runState~(f~x))$
 $=~<\text{Lema 1, id.1, Def. (.)}>$
 
 $f x$
+
+
+### Monad.2: m >>= return = m
+
+$$\text{(State h) >>= return}$$
+
+$$\text{= < (>>=).1 >}$$
+
+$$
+\begin{aligned}
+State (\lambda s \to\ &let (v\ :!:\ s') = runState (State\ h) s \\
+                      &in\ runState (return\ v) s')
+\end{aligned}
+$$
+
+$$\text{= < Lema 1: runState.State = State.runState = id >}$$
+
+$$
+\begin{aligned}
+State (\lambda s \to\ &let\ (v\ :!:\ s') = h\ s \\
+                      &in\ runState\ (return\ v)\ s')
+\end{aligned}
+$$
+
+$$\text{= < return >}$$
+
+$$
+\begin{aligned}
+State (\lambda s \to\ &let\ (v\ :!:\ s') = h\ s \\
+                      &in\ runState\ (State (\lambda s'' \to\ (v\ :!:\ s'')))\ s')
+\end{aligned}
+$$
+
+$$\text{= < Lema 1 >}$$
+
+$$
+\begin{aligned}
+State (\lambda s \to\ &let\ (v\ :!:\ s') = h\ s \\
+                      &in\ (\lambda s'' \to\ (v\ :!:\ s'')) s')
+\end{aligned}
+$$
+
+$$\text{= < App >}$$
+
+$$
+\begin{aligned}
+State (\lambda s \to\ &let\ (v\ :!:\ s') = h\ s \\
+                      &in\ (v\ :!:\ s'))
+\end{aligned}
+$$
+
+$$\text{= < def let >}$$
+
+$$State (\lambda s \to\ h\ s)$$
+
+$$\text{= < }\eta\text{-reducción >}$$
+
+$$\text{(State h)}$$
+
+
