@@ -28,7 +28,8 @@ newtype State a = State { runState :: Env -> Pair a Env }
 
 instance Monad State where
   return x = State (\s -> (x :!: s))
-  m >>= f = State (\s -> let (v :!: s') = runState m s in runState (f v) s')
+  m >>= f = State (\s -> let (v :!: s') = runState m s
+                         in runState (f v) s')
 
 -- Para calmar al GHC
 instance Functor State where

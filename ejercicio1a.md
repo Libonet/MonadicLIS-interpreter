@@ -1,7 +1,6 @@
 ---
-title: "TP1: Lenguaje Imperativo Simple"
+title: "TP3: Lenguaje Imperativo Simple Monadico"
 author: Grillo (G-5811/4), Libonati (L-3256/5), Maiza (M-7116/1)
-date: 03/12/2024
 geometry: margin=2cm
 output: pdf_document
 header-includes:
@@ -15,50 +14,60 @@ header-includes:
 
 Vamos a demostrar que State es una mónada probando las tres leyes de mónadas para la instancia dada.
 
-### Monad.1: return a >>= k = k a
+### Monad.1: $return~a >>= k = k~a$
 
-$return~x >>= f$
+$$return~x >>= f$$
 
-$=~<\text{return.1}>$
+$$=~<\text{return.1}>$$
 
-$State~(\text{\textbackslash} s \rightarrow (x~\text{:!:}~s)) >>= f$
+$$State~(\lambda s \rightarrow (x~\text{:!:}~s)) >>= f$$
 
-$=~<\text{(>>=).1}>$
+$$=~<(>>=).1>$$
 
-$State~(\text{\textbackslash} s'' \rightarrow let (v~\text{:!:}~s') = runState~(State~(\text{\textbackslash} s \rightarrow (x~\text{:!:}~s)))~s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in~runState~(f~v)~s'
-)$
+$$
+\begin{aligned}
+State~(\lambda s'' \to\ &let (v~\text{:!:}~s') = runState~(State~(\lambda s \to\ (x~\text{:!:}~s)))~s'' \\
+                               &in~runState~(f~v)~s')
+\end{aligned}
+$$
 
-$=~<\text{Lema 1: } (runState.State) = (State.runState) = id\text{, id.1, Def. (.)}>$
+$$=~<\text{Lema 1: } (runState.State) = (State.runState) = id\text{, id.1, Def. (.)}>$$
 
-$State~(\text{\textbackslash} s'' \rightarrow let (v~\text{:!:}~s') = (\text{\textbackslash} s \rightarrow (x~\text{:!:}~s))~s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in~runState~(f~v)~s'
-)$
+$$
+\begin{aligned}
+State~(\lambda s'' \to\ &let (v~\text{:!:}~s') = (\lambda s \to\ (x~\text{:!:}~s))~s'' \\
+                               &in~runState~(f~v)~s')
+\end{aligned}
+$$
 
-$=~<\text{Aplicación}>$
-
-$State~(\text{\textbackslash} s'' \rightarrow let (v~\text{:!:}~s') = (x~\text{:!:}~s'') \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in~runState~(f~v)~s'
-)$
-
-$=~<\text{Def. let}>$
-
-$State~(\text{\textbackslash} s'' \rightarrow runState~(f~x)~s'')$
-
-$=~<\text{Lema 2: (\textbackslash}x \rightarrow f x) = f>$
-
-$State~(runState~(f~x))$
-
-$=~<\text{Lema 1, id.1, Def. (.)}>$
-
-$f x$
+$$=~<\text{Aplicación}>$$
 
 
-### Monad.2: m >>= return = m
+$$
+\begin{aligned}
+State~(\lambda s'' \rightarrow &let~(v~\text{:!:}~s') = (x~\text{:!:}~s'') \\
+                               &in~runState~(f~v)~s' )
+\end{aligned}
+$$
 
-$$\text{(State h) >>= return}$$
+$$=~<\text{Def. let}>$$
 
-$$\text{= < (>>=).1 >}$$
+$$State~(\lambda s'' \rightarrow runState~(f~x)~s'')$$
+
+$$=~<\eta\text{-reducción: (}\lambda x \to\ f\ x) = f>$$
+
+$$State~(runState~(f~x))$$
+
+$$=~<\text{Lema 1, id.1, Def. (.)}>$$
+
+$$f\ x$$
+
+
+### Monad.2: $m >>= return = m$
+
+$$(State~h) >>= return$$
+
+$$=~<~(>>=).1~>$$
 
 $$
 \begin{aligned}
@@ -76,7 +85,7 @@ State (\lambda s \to\ &let\ (v\ :!:\ s') = h\ s \\
 \end{aligned}
 $$
 
-$$\text{= < return >}$$
+$$\text{= < def return >}$$
 
 $$
 \begin{aligned}
@@ -111,4 +120,6 @@ $$\text{= < }\eta\text{-reducción >}$$
 
 $$\text{(State h)}$$
 
+\newpage
 
+### Monad.3: $m >>= (\lambda x~\to~k~x >>= h) = (m >>= k) >>= h$
