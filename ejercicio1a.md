@@ -166,6 +166,17 @@ $$State (\lambda s \to\ let\ (v\ :!:\ s') = f\ s$$
 $$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ (\lambda s'' \to\ let\ (v'\ :!:\ s''') = runState\ (k\ v)\ s''$$
 $$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')\ s')$$
 
+$$\text{= < App >}$$
+
+$$State (\lambda s \to\ let\ (v\ :!:\ s') = f\ s$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ let\ (v'\ :!:\ s''') = runState\ (k\ v)\ s'$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')$$
+
+$$\text{= < Def. let>}$$
+
+$$State (\lambda s \to\ let\ (v\ :!:\ s') = f\ s$$
+$$(v'\ :!:\ s''') = runState\ (k\ v)\ s')$$
+$$in\ runState\ (h\ v')\ s''')$$
 
 Para completar la prueba vamos a comenzar desde el final
 
