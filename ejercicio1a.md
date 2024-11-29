@@ -16,58 +16,58 @@ Vamos a demostrar que State es una mónada probando las tres leyes de mónadas p
 
 ### Monad.1: $return~a >>= k = k~a$
 
-$$return~x >>= f$$
+$$return\ x >>= f$$
 
-$$=~<\text{return.1}>$$
+$$=\ <\text{return.1}>$$
 
-$$State~(\lambda s \rightarrow (x~\text{:!:}~s)) >>= f$$
+$$State\ (\lambda s \rightarrow (x\ :!:\ s)) >>= f$$
 
-$$=~<(>>=).1>$$
-
-$$
-\begin{aligned}
-State~(\lambda s'' \to\ &let (v~\text{:!:}~s') = runState~(State~(\lambda s \to\ (x~\text{:!:}~s)))~s'' \\
-                               &in~runState~(f~v)~s')
-\end{aligned}
-$$
-
-$$=~<\text{Lema 1: } (runState.State) = (State.runState) = id\text{, id.1, Def. (.)}>$$
+$$=\ <(>>=).1>$$
 
 $$
 \begin{aligned}
-State~(\lambda s'' \to\ &let (v~\text{:!:}~s') = (\lambda s \to\ (x~\text{:!:}~s))~s'' \\
-                               &in~runState~(f~v)~s')
+State\ (\lambda s'' \to\ &let (v\ :!:\ s') = runState\ (State\ (\lambda s \to\ (x\ :!:\ s)))\ s'' \\
+                               &in\ runState\ (f\ v)\ s')
 \end{aligned}
 $$
 
-$$=~<\text{Aplicación}>$$
+$$=\ <\text{Lema 1: } (runState.State) = (State.runState) = id\text{, id.1, Def. (.)}>$$
+
+$$
+\begin{aligned}
+State\ (\lambda s'' \to\ &let\ (v\ :!:\ s') = (\lambda s \to\ (x\ :!:\ s))\ s'' \\
+                               &in\ runState\ (f\ v)\ s')
+\end{aligned}
+$$
+
+$$=\ <\text{Aplicación}>$$
 
 
 $$
 \begin{aligned}
-State~(\lambda s'' \rightarrow &let~(v~\text{:!:}~s') = (x~\text{:!:}~s'') \\
-                               &in~runState~(f~v)~s' )
+State\ (\lambda s'' \rightarrow &let\ (v\ :!:\ s') = (x\ :!:\ s'') \\
+                               &in\ runState\ (f\ v)\ s' )
 \end{aligned}
 $$
 
-$$=~<\text{Def. let}>$$
+$$=\ <\text{Def. let}>$$
 
-$$State~(\lambda s'' \rightarrow runState~(f~x)~s'')$$
+$$State\ (\lambda s'' \rightarrow runState\ (f\ x)\ s'')$$
 
-$$=~<\eta\text{-reducción: (}\lambda x \to\ f\ x) = f>$$
+$$=\ <\eta\text{-reducción: (}\lambda x \to\ f\ x) = f>$$
 
-$$State~(runState~(f~x))$$
+$$State\ (runState\ (f\ x))$$
 
-$$=~<\text{Lema 1, id.1, Def. (.)}>$$
+$$=\ <\text{Lema 1, id.1, Def. (.)}>$$
 
 $$f\ x$$
 
 
 ### Monad.2: $m >>= return = m$
 
-$$(State~h) >>= return$$
+$$(State\ h) >>= return$$
 
-$$=~<~(>>=).1~>$$
+$$=\ <\ (>>=).1\ >$$
 
 $$
 \begin{aligned}
@@ -124,14 +124,14 @@ $$\text{(State h)}$$
 
 ### Monad.3: $m >>= (\lambda x~\to~k~x >>= h) = (m >>= k) >>= h$
 
-$$State\ f >>= (\lambda x~\to~k~x >>= h)$$
+$$State\ f >>= (\lambda x\ \to\ k\ x >>= h)$$
 
-$$=~<~(>>=).1~>$$
+$$=\ <\ (>>=).1\ >$$
 
 $$
 \begin{aligned}
 State (\lambda s \to\ &let (v\ :!:\ s') = runState\ (State\ f)\ s \\
-                      &in\ runState\ ((\lambda x~\to~k~x >>= h)\ v)\ s')
+                      &in\ runState\ ((\lambda x\ \to\ k\ x >>= h)\ v)\ s')
 \end{aligned}
 $$
 
@@ -141,7 +141,7 @@ $$= <\text{Lema 1: runState.State = State.runState = id}>$$
 $$
 \begin{aligned}
 State (\lambda s \to\ &let (v\ :!:\ s') = f\ s \\
-                      &in\ runState\ ((\lambda x~\to~k~x >>= h)\ v)\ s')
+                      &in\ runState\ ((\lambda x\ \to\ k\ x >>= h)\ v)\ s')
 \end{aligned}
 $$
 
@@ -156,19 +156,15 @@ $$
 
 $$=<\ (>>=).1\ >$$
 
-$
-State (\lambda s \to\ let (v\ :!:\ s') = f\ s \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (State (\lambda s'' \to\ let (v'\ :!:\ s''') = runState\ (k\ v)\ s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s'''))\ s')
-$
+$$State (\lambda s \to\ let (v\ :!:\ s') = f\ s$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (State (\lambda s'' \to\ let (v'\ :!:\ s''') = runState\ (k\ v)\ s''$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s'''))\ s')$$
 
 $$\text{= < Lema 1 >}$$
 
-$
-State (\lambda s \to\ let\ (v\ :!:\ s') = f\ s \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ (\lambda s'' \to\ let\ (v'\ :!:\ s''') = runState\ (k\ v)\ s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')\ s')
-$
+$$State (\lambda s \to\ let\ (v\ :!:\ s') = f\ s$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ (\lambda s'' \to\ let\ (v'\ :!:\ s''') = runState\ (k\ v)\ s''$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')\ s')$$
 
 
 Para completar la prueba vamos a comenzar desde el final
@@ -195,41 +191,32 @@ $$
 
 $$=<\ (>>=).1\ >$$
 
-$
-State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = runState\ ( State (\lambda s \to\ let (v\ :!:\ s') = f\ s \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s'))\ s'') \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')
-$
+$$
+State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = runState\ ( State (\lambda s \to\ let (v\ :!:\ s') = f\ s$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s'))\ s'')$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')$$
 
 $$\text{= < Lema 1 >}$$
 
-$
-State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = (\lambda s \to\ let (v\ :!:\ s') = f\ s \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s')\ s'') \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')
-$
+$$State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = (\lambda s \to\ let (v\ :!:\ s') = f\ s$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s')\ s'')$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')$$
 
 $$\text{= < App >}$$
 
-$
-State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = let\ (v\ :!:\ s') = f\ s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s')) \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')
-$
+$$State (\lambda s'' \to\ let\ (v'\ :!:\ s''') = let\ (v\ :!:\ s') = f\ s''$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ v)\ s'))$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')$$
 
-$$
-\text{= < Lema 2: }\lambda s'' \to \text{let (c :!: d) = let (a :!: b) =} f\ s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ a)\ b \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ c)\ d \\
- = \\
-\lambda s'' \to\ let\ (a :!: b) = f\ s'' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  (c :!: d) = runState\ (k\ a)\ b \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ c)\ d>
-$$
+$$\text{= < Lema 2: }\lambda s'' \to \text{let (c :!: d) = let (a :!: b) =} f\ s''$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (k\ a)\ b$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ c)\ d$$
+$$ = $$
+$$\lambda s'' \to\ let\ (a :!: b) = f\ s''$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  (c :!: d) = runState\ (k\ a)\ b$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ c)\ d>$$
 
-$
-State (\lambda s'' \to\ let\ let\ (v\ :!:\ s') = f\ s'' \\
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ (v'\ :!:\ s''') = in\ runState\ (k\ v)\ s' \\
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')
-$
+$$State (\lambda s'' \to\ let\ let\ (v\ :!:\ s') = f\ s''$$
+$$ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ (v'\ :!:\ s''') = in\ runState\ (k\ v)\ s'$$
+$$~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ in\ runState\ (h\ v')\ s''')$$
 
