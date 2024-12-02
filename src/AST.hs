@@ -23,6 +23,8 @@ data Exp a where
   And ::Exp Bool -> Exp Bool -> Exp Bool
   Or ::Exp Bool -> Exp Bool -> Exp Bool
   Not ::Exp Bool -> Exp Bool
+  EAssgn :: Variable -> Exp Int -> Exp Int
+  ESeq :: Exp Int -> Exp Int -> Exp Int
   Eq ::Exp Int -> Exp Int -> Exp Bool
   NEq ::Exp Int -> Exp Int -> Exp Bool
 
