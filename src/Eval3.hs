@@ -27,11 +27,11 @@ initTrace = ""
 -- lleve una traza de ejecución (además de manejar errores y estado).
 -- y dar su instancia de mónada. Llamarla |StateErrorTrace|. 
 newtype StateErrorTrace a =
-  SET { runSET :: Env -> Trace -> Either Error (Pair a (Env, Trace)) }
+  SET { runSET :: Env -> Trace -> Either Error (Pair a (Pair Env Trace)) }
 
 instance Monad StateErrorTrace where
-  return x = SET (\env t -> return (x :!: (env,t)))
-  m >>= f = SET (\env t -> do (x :!: (env', t')) <- runSET m env t
+  return x = SET (\env t -> return (x :!: (env :!: t)))
+  m >>= f = SET (\env t -> do (x :!: (env' :!: t')) <- runSET m env t
                               runSET (f x) env' t')
 
 -- Recuerde agregar las siguientes instancias para calmar al GHC:
@@ -47,7 +47,7 @@ instance Applicative StateErrorTrace where
 
 -- Ejercicio 3.c: Dar una instancia de MonadTrace para StateErrorTrace.
 instance MonadTrace StateErrorTrace where
-  track str = SET (\env t -> return (() :!: (env, t ++ str)))
+  track str = SET (\env t -> return (() :!: (env :!: t ++ str)))
 
 -- Ejercicio 3.d: Dar una instancia de MonadError para StateErrorTrace.
 instance MonadError StateErrorTrace where
@@ -56,17 +56,17 @@ instance MonadError StateErrorTrace where
 -- Ejercicio 3.e: Dar una instancia de MonadState para StateErrorTrace.
 instance MonadState StateErrorTrace where
   lookfor v = SET (\env t -> lookfor' v env t)
-    where lookfor' :: Variable -> Env -> Trace -> Either Error (Pair Int (Env, Trace))
+    where lookfor' :: Variable -> Env -> Trace -> Either Error (Pair Int (Pair Env Trace))
           lookfor' v s t = case M.lookup v s of
                             Nothing -> Left UndefVar
-                            Just x -> Right (x :!: (s, t))
-  update v i = SET (\env t -> return (() :!: (M.insert v i env, t)))
+                            Just x -> Right (x :!: (s :!: t))
+  update v i = SET (\env t -> return (() :!: (M.insert v i env :!: t)))
 
 -- Ejercicio 3.f: Implementar el evaluador utilizando la monada StateErrorTrace.
 -- Evalua un programa en el estado nulo
 
 eval :: Comm -> Either Error (Env, Trace)
-eval c = do (() :!: (env, t)) <- runSET (stepCommStar c) initEnv initTrace
+eval c = do (() :!: (env :!: t)) <- runSET (stepCommStar c) initEnv initTrace
             return (env, t)
 
 -- Evalua multiples pasos de un comando, hasta alcanzar un Skip
