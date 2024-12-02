@@ -74,7 +74,7 @@ stepComm (Seq c1 c2) = do x <- stepComm c1
                           stepComm (Seq x c2)
 stepComm (IfThenElse exp c1 c2) = do b <- evalExp exp
                                      if b then stepComm c1 else stepComm c2
-stepComm (Repeat exp c) = stepComm (Seq c (IfThenElse exp (Repeat exp c) Skip))
+stepComm (Repeat exp c) = stepComm (Seq c (IfThenElse exp Skip (Repeat exp c)))
 
 -- Evalua una expresion
 evalExp :: (MonadState m, MonadError m) => Exp a -> m a
@@ -127,5 +127,9 @@ evalExp (Eq e1 e2) = do x <- evalExp e1
 evalExp (NEq e1 e2) = do x <- evalExp e1
                          y <- evalExp e2
                          return (x /= y)
-
+evalExp (EAssgn v e) = do x <- evalExp e
+                          update v x
+                          return x
+evalExp (ESeq e1 e2) = do evalExp e1
+                          evalExp e2
 

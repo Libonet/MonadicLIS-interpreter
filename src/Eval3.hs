@@ -79,14 +79,14 @@ stepComm :: (MonadState m, MonadError m, MonadTrace m) => Comm -> m Comm
 stepComm Skip = return Skip
 stepComm (Let v exp) = do x <- evalIntExp exp
                           update v x
-                          track $ "var " ++ show v ++ " = " ++ show x
+                          track $ "var " ++ v ++ " = " ++ show x ++ "\n"
                           return Skip
 stepComm (Seq Skip c2) = stepComm c2 
 stepComm (Seq c1 c2) = do x <- stepComm c1
                           stepComm (Seq x c2)
 stepComm (IfThenElse exp c1 c2) = do b <- evalIntExp exp
                                      if b then stepComm c1 else stepComm c2
-stepComm (Repeat exp c) = stepComm (Seq c (IfThenElse exp (Repeat exp c) Skip))
+stepComm (Repeat exp c) = stepComm (Seq c (IfThenElse exp Skip (Repeat exp c)))
 
 -- Evalua una expresion 
 evalIntExp :: (MonadState m, MonadError m, MonadTrace m) => Exp a -> m a
@@ -112,12 +112,12 @@ evalIntExp (Div e1 e2) = do x <- evalIntExp e1
 evalIntExp (VarDec v) = do x <- lookfor v
                            x' <- return (x - 1)
                            update v x'
-                           track $ "var " ++ show v ++ " = " ++ show x'
+                           track $ "var " ++ v ++ " = " ++ show x' ++ "\n"
                            return x'
 evalIntExp (VarInc v) = do x <- lookfor v
                            x' <- return (x + 1)
                            update v x'
-                           track $ "var " ++ show v ++ " = " ++ show x'
+                           track $ "var " ++ v ++ " = " ++ show x' ++ "\n"
                            return x'
 evalIntExp BTrue = return True
 evalIntExp BFalse = return False
@@ -141,3 +141,9 @@ evalIntExp (Eq e1 e2) = do x <- evalIntExp e1
 evalIntExp (NEq e1 e2) = do x <- evalIntExp e1
                             y <- evalIntExp e2
                             return (x /= y)
+evalIntExp (EAssgn v e) = do x <- evalIntExp e
+                             update v x
+                             track $ "var " ++ v ++ " = " ++ show x ++ "\n"
+                             return x
+evalIntExp (ESeq e1 e2) = do evalIntExp e1
+                             evalIntExp e2
