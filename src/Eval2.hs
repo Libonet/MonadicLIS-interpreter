@@ -97,14 +97,6 @@ evalExp (Div e1 e2) = do x <- evalExp e1
                          case y of
                           0 -> throw DivByZero
                           _ -> return (x `div` y)
-evalExp (VarDec v) = do x <- lookfor v
-                        x' <- return (x - 1)
-                        update v x'
-                        return x'
-evalExp (VarInc v) = do x <- lookfor v
-                        x' <- return (x + 1)
-                        update v x'
-                        return x'
 evalExp BTrue = return True
 evalExp BFalse = return False
 evalExp (Lt e1 e2) = do x <- evalExp e1

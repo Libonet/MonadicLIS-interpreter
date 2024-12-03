@@ -79,7 +79,7 @@ stepComm :: (MonadState m, MonadError m, MonadTrace m) => Comm -> m Comm
 stepComm Skip = return Skip
 stepComm (Let v exp) = do x <- evalIntExp exp
                           update v x
-                          track $ "var " ++ v ++ " = " ++ show x ++ "\n"
+                          track $ v ++ " = " ++ show x ++ "; "
                           return Skip
 stepComm (Seq Skip c2) = stepComm c2 
 stepComm (Seq c1 c2) = do x <- stepComm c1
@@ -109,16 +109,6 @@ evalIntExp (Div e1 e2) = do x <- evalIntExp e1
                             case y of
                               0 -> throw DivByZero
                               _ -> return (x `div` y)
-evalIntExp (VarDec v) = do x <- lookfor v
-                           x' <- return (x - 1)
-                           update v x'
-                           track $ "var " ++ v ++ " = " ++ show x' ++ "\n"
-                           return x'
-evalIntExp (VarInc v) = do x <- lookfor v
-                           x' <- return (x + 1)
-                           update v x'
-                           track $ "var " ++ v ++ " = " ++ show x' ++ "\n"
-                           return x'
 evalIntExp BTrue = return True
 evalIntExp BFalse = return False
 evalIntExp (Lt e1 e2) = do x <- evalIntExp e1
@@ -143,7 +133,7 @@ evalIntExp (NEq e1 e2) = do x <- evalIntExp e1
                             return (x /= y)
 evalIntExp (EAssgn v e) = do x <- evalIntExp e
                              update v x
-                             track $ "var " ++ v ++ " = " ++ show x ++ "\n"
+                             track $ v ++ " = " ++ show x ++ "; "
                              return x
 evalIntExp (ESeq e1 e2) = do evalIntExp e1
                              evalIntExp e2
